@@ -6,3 +6,6 @@ export/
 export_presets.cfg
 .DS_Store
 *.tmp
+
+# Engine binary folder (180MB+ exceeds GitHub default 100MB blob limit)
+engine/

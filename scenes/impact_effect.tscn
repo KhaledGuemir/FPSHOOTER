@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/impact_effect.gd" id="1_impact"]
+[ext_resource type="AudioStream" path="res://assets/audio/impact.wav" id="2_audio_impact"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1"]
 direction = Vector3(0, 1, 0)
@@ -37,3 +38,8 @@ draw_pass_1 = SubResource("BoxMesh_spark")
 light_color = Color(1, 0.65, 0.2, 1)
 light_energy = 3.5
 omni_range = 3.0
+
+[node name="AudioHit" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_audio_impact")
+unit_size = 12.0
+max_distance = 60.0

@@ -6,7 +6,7 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_target"]
 size = Vector3(1.2, 2.2, 1.0)
 
-[node name="TargetDrone" type="StaticBody3D"]
+[node name="TargetDrone" type="CharacterBody3D" groups=["targets"]]
 script = ExtResource("1_drone")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
