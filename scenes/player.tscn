@@ -1,0 +1,140 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_player"]
+[ext_resource type="PackedScene" path="res://assets/models/pistol.glb" id="2_pistol_mesh"]
+[ext_resource type="PackedScene" path="res://assets/models/rifle.glb" id="3_rifle_mesh"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_flash"]
+direction = Vector3(0, 0, -1)
+spread = 35.0
+initial_velocity_min = 3.0
+initial_velocity_max = 6.0
+gravity = Vector3(0, -2, 0)
+scale_min = 0.03
+scale_max = 0.08
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_flash_spark"]
+emission_enabled = true
+emission = Color(1, 0.75, 0.2, 1)
+emission_energy_multiplier = 5.0
+albedo_color = Color(1, 0.8, 0.3, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_flash"]
+material = SubResource("StandardMaterial3D_flash_spark")
+size = Vector3(0.04, 0.04, 0.04)
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_player")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_player")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+current = true
+
+[node name="RayCast3D" type="RayCast3D" parent="Head/Camera3D"]
+target_position = Vector3(0, 0, -80)
+
+[node name="GunContainer" type="Node3D" parent="Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.28, -0.22, -0.55)
+
+[node name="Pistol" type="Node3D" parent="Head/Camera3D/GunContainer"]
+
+[node name="PistolModel" parent="Head/Camera3D/GunContainer/Pistol" instance=ExtResource("2_pistol_mesh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="MuzzleLight" type="OmniLight3D" parent="Head/Camera3D/GunContainer/Pistol"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, -0.32)
+visible = false
+light_color = Color(1, 0.7, 0.2, 1)
+light_energy = 3.5
+omni_range = 4.0
+
+[node name="FlashParticles" type="GPUParticles3D" parent="Head/Camera3D/GunContainer/Pistol"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, -0.32)
+emitting = false
+amount = 12
+lifetime = 0.08
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_flash")
+draw_pass_1 = SubResource("BoxMesh_flash")
+
+[node name="Rifle" type="Node3D" parent="Head/Camera3D/GunContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, -0.15)
+visible = false
+
+[node name="RifleModel" parent="Head/Camera3D/GunContainer/Rifle" instance=ExtResource("3_rifle_mesh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="MuzzleLight" type="OmniLight3D" parent="Head/Camera3D/GunContainer/Rifle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, -0.78)
+visible = false
+light_color = Color(1, 0.65, 0.2, 1)
+light_energy = 4.0
+omni_range = 5.0
+
+[node name="FlashParticles" type="GPUParticles3D" parent="Head/Camera3D/GunContainer/Rifle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, -0.78)
+emitting = false
+amount = 16
+lifetime = 0.07
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_flash")
+draw_pass_1 = SubResource("BoxMesh_flash")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Crosshair" type="ColorRect" parent="HUD"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -3.0
+offset_top = -3.0
+offset_right = 3.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.8, 0.3, 0.85)
+
+[node name="WeaponLabel" type="Label" parent="HUD"]
+offset_left = 24.0
+offset_top = 640.0
+offset_right = 400.0
+offset_bottom = 670.0
+theme_override_font_sizes/font_size = 20
+text = "WEAPON: [1] PISTOL"
+
+[node name="AmmoLabel" type="Label" parent="HUD"]
+offset_left = 24.0
+offset_top = 672.0
+offset_right = 300.0
+offset_bottom = 702.0
+theme_override_font_sizes/font_size = 18
+text = "AMMO: 12 / 12"
+
+[node name="ControlsGuide" type="Label" parent="HUD"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -340.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 120.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 14
+text = "CONTROLS:
+WASD - Move | Shift - Sprint | Space - Jump
+Left Click - Shoot | 1, 2 - Switch Guns
+R - Reload | Esc - Toggle Mouse"
